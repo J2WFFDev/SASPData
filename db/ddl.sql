@@ -1,0 +1,2 @@
+-- db/ddl.sql
+-- Place the Postgres DDL from doc/prd/SASPData PRD.txt here or run it manually.
