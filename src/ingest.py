@@ -6,6 +6,14 @@ import logging
 from typing import Dict, List
 import requests
 import psycopg2
+import os
+import sys
+import json
+import hashlib
+import logging
+from typing import Dict, List
+import requests
+import psycopg2
 from psycopg2.extras import Json
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -24,8 +32,10 @@ ENDPOINTS = {
     ]
 }
 
+
 def canonicalize_json(obj) -> str:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
 
 def get_db_conn():
     conn = psycopg2.connect(
@@ -38,9 +48,17 @@ def get_db_conn():
     conn.autocommit = True
     return conn
 
+
 def ensure_tables(conn):
+    ddl_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "db", "ddl.sql")
+    if not os.path.exists(ddl_path):
+        logger.warning("DDL file not found at %s; skipping ensure_tables", ddl_path)
+        return
+    with open(ddl_path, "r", encoding="utf-8") as f:
+        ddl = f.read()
     with conn.cursor() as cur:
-        cur.execute(open(os.path.join(os.path.dirname(__file__), "..", "db", "ddl.sql")).read())
+        cur.execute(ddl)
+
 
 def ingest_endpoint(conn, table: str, url: str):
     try:
@@ -86,6 +104,7 @@ def ingest_endpoint(conn, table: str, url: str):
             logger.exception("DB insert failed for %s : %s", url, e)
             return False
 
+
 def run_ingest(endpoints: Dict[str, List[str]] = ENDPOINTS):
     conn = get_db_conn()
     try:
@@ -100,6 +119,7 @@ def run_ingest(endpoints: Dict[str, List[str]] = ENDPOINTS):
         logger.info("Ingest finished: tried=%d inserted=%d", tried, inserted)
     finally:
         conn.close()
+
 
 if __name__ == "__main__":
     run_ingest()
