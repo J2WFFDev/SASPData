@@ -18,78 +18,15 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "${{ matrix.python-version }}"
+      - name: Diagnostics
+        run: |
+          echo "Runner: $(uname -a)"
+          python --version
+          pip -V
+          pip list --format=columns
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run basic import check
         run: python -c "import src.ingest; print('ingest module imported')"
-name: CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  lint:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run basic import check
-        run: python -c "import src.ingest; print('ingest module imported')"
-name: CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  lint:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run basic import check
-        run: python -c "import src.ingest; print('ingest module imported')"
- name: CI
-
- on:
-   push:
-     branches: [ main ]
-   pull_request:
-     branches: [ main ]
-
- jobs:
-   lint:
-     runs-on: windows-latest
-     steps:
-       - uses: actions/checkout@v4
-       - name: Set up Python
-         uses: actions/setup-python@v4
-         with:
-           python-version: "3.11"
-       - name: Install deps
-         run: |
-           python -m pip install --upgrade pip
-           pip install -r requirements.txt
-       - name: Run basic import check
-         run: python -c "import src.ingest; print('ingest module imported')"
