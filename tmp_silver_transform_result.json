@@ -1,0 +1,802 @@
+[
+  {
+    "raw_id": 1,
+    "scoreboard_id": 1
+  },
+  {
+    "raw_id": 3,
+    "scoreboard_id": 2
+  },
+  {
+    "raw_id": 4,
+    "scoreboard_id": 3
+  },
+  {
+    "raw_id": 5,
+    "scoreboard_id": 10
+  },
+  {
+    "raw_id": 6,
+    "scoreboard_id": 11
+  },
+  {
+    "raw_id": 7,
+    "scoreboard_id": 12
+  },
+  {
+    "raw_id": 8,
+    "scoreboard_id": 13
+  },
+  {
+    "raw_id": 9,
+    "scoreboard_id": 14
+  },
+  {
+    "raw_id": 10,
+    "scoreboard_id": 15
+  },
+  {
+    "raw_id": 11,
+    "scoreboard_id": 16
+  },
+  {
+    "raw_id": 12,
+    "scoreboard_id": 17
+  },
+  {
+    "raw_id": 14,
+    "scoreboard_id": 18
+  },
+  {
+    "raw_id": 15,
+    "scoreboard_id": 19
+  },
+  {
+    "raw_id": 16,
+    "scoreboard_id": 20
+  },
+  {
+    "raw_id": 17,
+    "scoreboard_id": 21
+  },
+  {
+    "raw_id": 18,
+    "scoreboard_id": 22
+  },
+  {
+    "raw_id": 19,
+    "scoreboard_id": 23
+  },
+  {
+    "raw_id": 20,
+    "scoreboard_id": 24
+  },
+  {
+    "raw_id": 21,
+    "scoreboard_id": 25
+  },
+  {
+    "raw_id": 22,
+    "scoreboard_id": 26
+  },
+  {
+    "raw_id": 23,
+    "scoreboard_id": 27
+  },
+  {
+    "raw_id": 24,
+    "scoreboard_id": 28
+  },
+  {
+    "raw_id": 25,
+    "scoreboard_id": 29
+  },
+  {
+    "raw_id": 26,
+    "scoreboard_id": 30
+  },
+  {
+    "raw_id": 27,
+    "scoreboard_id": 31
+  },
+  {
+    "raw_id": 28,
+    "scoreboard_id": 32
+  },
+  {
+    "raw_id": 29,
+    "scoreboard_id": 33
+  },
+  {
+    "raw_id": 30,
+    "scoreboard_id": 34
+  },
+  {
+    "raw_id": 31,
+    "scoreboard_id": 35
+  },
+  {
+    "raw_id": 32,
+    "scoreboard_id": 36
+  },
+  {
+    "raw_id": 33,
+    "scoreboard_id": 37
+  },
+  {
+    "raw_id": 34,
+    "scoreboard_id": 38
+  },
+  {
+    "raw_id": 35,
+    "scoreboard_id": 39
+  },
+  {
+    "raw_id": 36,
+    "scoreboard_id": 40
+  },
+  {
+    "raw_id": 37,
+    "scoreboard_id": 41
+  },
+  {
+    "raw_id": 38,
+    "scoreboard_id": 42
+  },
+  {
+    "raw_id": 39,
+    "scoreboard_id": 43
+  },
+  {
+    "raw_id": 40,
+    "scoreboard_id": 44
+  },
+  {
+    "raw_id": 42,
+    "scoreboard_id": 45
+  },
+  {
+    "raw_id": 43,
+    "scoreboard_id": 46
+  },
+  {
+    "raw_id": 44,
+    "scoreboard_id": 47
+  },
+  {
+    "raw_id": 46,
+    "scoreboard_id": 48
+  },
+  {
+    "raw_id": 47,
+    "scoreboard_id": 49
+  },
+  {
+    "raw_id": 48,
+    "scoreboard_id": 50
+  },
+  {
+    "raw_id": 49,
+    "scoreboard_id": 51
+  },
+  {
+    "raw_id": 50,
+    "scoreboard_id": 52
+  },
+  {
+    "raw_id": 51,
+    "scoreboard_id": 53
+  },
+  {
+    "raw_id": 52,
+    "scoreboard_id": 54
+  },
+  {
+    "raw_id": 53,
+    "scoreboard_id": 55
+  },
+  {
+    "raw_id": 54,
+    "scoreboard_id": 56
+  },
+  {
+    "raw_id": 55,
+    "scoreboard_id": 57
+  },
+  {
+    "raw_id": 57,
+    "scoreboard_id": 58
+  },
+  {
+    "raw_id": 58,
+    "scoreboard_id": 59
+  },
+  {
+    "raw_id": 59,
+    "scoreboard_id": 60
+  },
+  {
+    "raw_id": 60,
+    "scoreboard_id": 61
+  },
+  {
+    "raw_id": 61,
+    "scoreboard_id": 62
+  },
+  {
+    "raw_id": 62,
+    "scoreboard_id": 63
+  },
+  {
+    "raw_id": 63,
+    "scoreboard_id": 64
+  },
+  {
+    "raw_id": 64,
+    "scoreboard_id": 65
+  },
+  {
+    "raw_id": 65,
+    "scoreboard_id": 66
+  },
+  {
+    "raw_id": 66,
+    "scoreboard_id": 67
+  },
+  {
+    "raw_id": 67,
+    "scoreboard_id": 68
+  },
+  {
+    "raw_id": 68,
+    "scoreboard_id": 69
+  },
+  {
+    "raw_id": 69,
+    "scoreboard_id": 70
+  },
+  {
+    "raw_id": 70,
+    "scoreboard_id": 71
+  },
+  {
+    "raw_id": 71,
+    "scoreboard_id": 72
+  },
+  {
+    "raw_id": 72,
+    "scoreboard_id": 73
+  },
+  {
+    "raw_id": 73,
+    "scoreboard_id": 74
+  },
+  {
+    "raw_id": 74,
+    "scoreboard_id": 75
+  },
+  {
+    "raw_id": 75,
+    "scoreboard_id": 76
+  },
+  {
+    "raw_id": 76,
+    "scoreboard_id": 77
+  },
+  {
+    "raw_id": 77,
+    "scoreboard_id": 78
+  },
+  {
+    "raw_id": 78,
+    "scoreboard_id": 79
+  },
+  {
+    "raw_id": 79,
+    "scoreboard_id": 80
+  },
+  {
+    "raw_id": 80,
+    "scoreboard_id": 81
+  },
+  {
+    "raw_id": 81,
+    "scoreboard_id": 82
+  },
+  {
+    "raw_id": 82,
+    "scoreboard_id": 83
+  },
+  {
+    "raw_id": 83,
+    "scoreboard_id": 84
+  },
+  {
+    "raw_id": 84,
+    "scoreboard_id": 85
+  },
+  {
+    "raw_id": 85,
+    "scoreboard_id": 86
+  },
+  {
+    "raw_id": 86,
+    "scoreboard_id": 87
+  },
+  {
+    "raw_id": 87,
+    "scoreboard_id": 88
+  },
+  {
+    "raw_id": 88,
+    "scoreboard_id": 89
+  },
+  {
+    "raw_id": 89,
+    "scoreboard_id": 90
+  },
+  {
+    "raw_id": 90,
+    "scoreboard_id": 91
+  },
+  {
+    "raw_id": 91,
+    "scoreboard_id": 92
+  },
+  {
+    "raw_id": 92,
+    "scoreboard_id": 93
+  },
+  {
+    "raw_id": 93,
+    "scoreboard_id": 94
+  },
+  {
+    "raw_id": 94,
+    "scoreboard_id": 95
+  },
+  {
+    "raw_id": 95,
+    "scoreboard_id": 96
+  },
+  {
+    "raw_id": 96,
+    "scoreboard_id": 97
+  },
+  {
+    "raw_id": 97,
+    "scoreboard_id": 98
+  },
+  {
+    "raw_id": 98,
+    "scoreboard_id": 99
+  },
+  {
+    "raw_id": 99,
+    "scoreboard_id": 100
+  },
+  {
+    "raw_id": 100,
+    "scoreboard_id": 101
+  },
+  {
+    "raw_id": 101,
+    "scoreboard_id": 102
+  },
+  {
+    "raw_id": 102,
+    "scoreboard_id": 103
+  },
+  {
+    "raw_id": 103,
+    "scoreboard_id": 104
+  },
+  {
+    "raw_id": 104,
+    "scoreboard_id": 105
+  },
+  {
+    "raw_id": 105,
+    "scoreboard_id": 106
+  },
+  {
+    "raw_id": 106,
+    "scoreboard_id": 107
+  },
+  {
+    "raw_id": 107,
+    "scoreboard_id": 108
+  },
+  {
+    "raw_id": 108,
+    "scoreboard_id": 109
+  },
+  {
+    "raw_id": 109,
+    "scoreboard_id": 110
+  },
+  {
+    "raw_id": 110,
+    "scoreboard_id": 111
+  },
+  {
+    "raw_id": 111,
+    "scoreboard_id": 112
+  },
+  {
+    "raw_id": 112,
+    "scoreboard_id": 113
+  },
+  {
+    "raw_id": 113,
+    "scoreboard_id": 114
+  },
+  {
+    "raw_id": 114,
+    "scoreboard_id": 115
+  },
+  {
+    "raw_id": 115,
+    "scoreboard_id": 116
+  },
+  {
+    "raw_id": 116,
+    "scoreboard_id": 117
+  },
+  {
+    "raw_id": 117,
+    "scoreboard_id": 118
+  },
+  {
+    "raw_id": 118,
+    "scoreboard_id": 119
+  },
+  {
+    "raw_id": 119,
+    "scoreboard_id": 120
+  },
+  {
+    "raw_id": 120,
+    "scoreboard_id": 121
+  },
+  {
+    "raw_id": 172,
+    "scoreboard_id": 122
+  },
+  {
+    "raw_id": 183,
+    "scoreboard_id": 123
+  },
+  {
+    "raw_id": 184,
+    "scoreboard_id": 124
+  },
+  {
+    "raw_id": 185,
+    "scoreboard_id": 125
+  },
+  {
+    "raw_id": 186,
+    "scoreboard_id": 126
+  },
+  {
+    "raw_id": 187,
+    "scoreboard_id": 127
+  },
+  {
+    "raw_id": 188,
+    "scoreboard_id": 128
+  },
+  {
+    "raw_id": 189,
+    "scoreboard_id": 129
+  },
+  {
+    "raw_id": 190,
+    "scoreboard_id": 130
+  },
+  {
+    "raw_id": 191,
+    "scoreboard_id": 131
+  },
+  {
+    "raw_id": 192,
+    "scoreboard_id": 132
+  },
+  {
+    "raw_id": 193,
+    "scoreboard_id": 133
+  },
+  {
+    "raw_id": 194,
+    "scoreboard_id": 134
+  },
+  {
+    "raw_id": 195,
+    "scoreboard_id": 135
+  },
+  {
+    "raw_id": 196,
+    "scoreboard_id": 136
+  },
+  {
+    "raw_id": 197,
+    "scoreboard_id": 137
+  },
+  {
+    "raw_id": 198,
+    "scoreboard_id": 138
+  },
+  {
+    "raw_id": 199,
+    "scoreboard_id": 139
+  },
+  {
+    "raw_id": 200,
+    "scoreboard_id": 140
+  },
+  {
+    "raw_id": 201,
+    "scoreboard_id": 141
+  },
+  {
+    "raw_id": 202,
+    "scoreboard_id": 142
+  },
+  {
+    "raw_id": 203,
+    "scoreboard_id": 143
+  },
+  {
+    "raw_id": 204,
+    "scoreboard_id": 144
+  },
+  {
+    "raw_id": 205,
+    "scoreboard_id": 145
+  },
+  {
+    "raw_id": 206,
+    "scoreboard_id": 146
+  },
+  {
+    "raw_id": 207,
+    "scoreboard_id": 147
+  },
+  {
+    "raw_id": 208,
+    "scoreboard_id": 148
+  },
+  {
+    "raw_id": 209,
+    "scoreboard_id": 149
+  },
+  {
+    "raw_id": 210,
+    "scoreboard_id": 150
+  },
+  {
+    "raw_id": 211,
+    "scoreboard_id": 151
+  },
+  {
+    "raw_id": 212,
+    "scoreboard_id": 152
+  },
+  {
+    "raw_id": 213,
+    "scoreboard_id": 153
+  },
+  {
+    "raw_id": 214,
+    "scoreboard_id": 154
+  },
+  {
+    "raw_id": 215,
+    "scoreboard_id": 155
+  },
+  {
+    "raw_id": 216,
+    "scoreboard_id": 156
+  },
+  {
+    "raw_id": 217,
+    "scoreboard_id": 157
+  },
+  {
+    "raw_id": 218,
+    "scoreboard_id": 158
+  },
+  {
+    "raw_id": 219,
+    "scoreboard_id": 159
+  },
+  {
+    "raw_id": 220,
+    "scoreboard_id": 160
+  },
+  {
+    "raw_id": 221,
+    "scoreboard_id": 161
+  },
+  {
+    "raw_id": 222,
+    "scoreboard_id": 162
+  },
+  {
+    "raw_id": 223,
+    "scoreboard_id": 163
+  },
+  {
+    "raw_id": 224,
+    "scoreboard_id": 164
+  },
+  {
+    "raw_id": 225,
+    "scoreboard_id": 165
+  },
+  {
+    "raw_id": 226,
+    "scoreboard_id": 166
+  },
+  {
+    "raw_id": 227,
+    "scoreboard_id": 167
+  },
+  {
+    "raw_id": 228,
+    "scoreboard_id": 168
+  },
+  {
+    "raw_id": 229,
+    "scoreboard_id": 169
+  },
+  {
+    "raw_id": 230,
+    "scoreboard_id": 170
+  },
+  {
+    "raw_id": 231,
+    "scoreboard_id": 171
+  },
+  {
+    "raw_id": 232,
+    "scoreboard_id": 172
+  },
+  {
+    "raw_id": 233,
+    "scoreboard_id": 173
+  },
+  {
+    "raw_id": 234,
+    "scoreboard_id": 174
+  },
+  {
+    "raw_id": 235,
+    "scoreboard_id": 175
+  },
+  {
+    "raw_id": 236,
+    "scoreboard_id": 176
+  },
+  {
+    "raw_id": 237,
+    "scoreboard_id": 177
+  },
+  {
+    "raw_id": 238,
+    "scoreboard_id": 178
+  },
+  {
+    "raw_id": 239,
+    "scoreboard_id": 179
+  },
+  {
+    "raw_id": 240,
+    "scoreboard_id": 180
+  },
+  {
+    "raw_id": 241,
+    "scoreboard_id": 181
+  },
+  {
+    "raw_id": 242,
+    "scoreboard_id": 182
+  },
+  {
+    "raw_id": 243,
+    "scoreboard_id": 183
+  },
+  {
+    "raw_id": 244,
+    "scoreboard_id": 184
+  },
+  {
+    "raw_id": 245,
+    "scoreboard_id": 185
+  },
+  {
+    "raw_id": 246,
+    "scoreboard_id": 186
+  },
+  {
+    "raw_id": 247,
+    "scoreboard_id": 187
+  },
+  {
+    "raw_id": 248,
+    "scoreboard_id": 188
+  },
+  {
+    "raw_id": 249,
+    "scoreboard_id": 189
+  },
+  {
+    "raw_id": 250,
+    "scoreboard_id": 190
+  },
+  {
+    "raw_id": 251,
+    "scoreboard_id": 191
+  },
+  {
+    "raw_id": 252,
+    "scoreboard_id": 192
+  },
+  {
+    "raw_id": 253,
+    "scoreboard_id": 193
+  },
+  {
+    "raw_id": 254,
+    "scoreboard_id": 194
+  },
+  {
+    "raw_id": 255,
+    "scoreboard_id": 195
+  },
+  {
+    "raw_id": 256,
+    "scoreboard_id": 196
+  },
+  {
+    "raw_id": 257,
+    "scoreboard_id": 197
+  },
+  {
+    "raw_id": 258,
+    "scoreboard_id": 198
+  },
+  {
+    "raw_id": 259,
+    "scoreboard_id": 199
+  },
+  {
+    "raw_id": 260,
+    "scoreboard_id": 200
+  },
+  {
+    "raw_id": 261,
+    "scoreboard_id": 201
+  },
+  {
+    "raw_id": 262,
+    "scoreboard_id": 202
+  },
+  {
+    "raw_id": 263,
+    "scoreboard_id": 203
+  },
+  {
+    "raw_id": 264,
+    "scoreboard_id": 204
+  },
+  {
+    "raw_id": 265,
+    "scoreboard_id": 205
+  },
+  {
+    "raw_id": 313,
+    "scoreboard_id": 105
+  }
+]

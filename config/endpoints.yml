@@ -1,0 +1,4 @@
+raw_scoreboard:
+  - https://virtual.sssfonline.com/api/shot/sasp-scoreboard/624
+raw_competition:
+  - https://virtual.sssfonline.com/api/shot/SASP/competitions?type=S&page=1
