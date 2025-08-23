@@ -1,0 +1,3 @@
+2025-08-22 16:49:00,895 - ERROR - ❌ Failed to extract competition IDs: cannot cast jsonb object to type integer
+
+2025-08-22 16:49:12,775 - INFO - 📊 Extracted 512 competition IDs for scoreboard ingestion

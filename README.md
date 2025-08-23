@@ -1,8 +1,20 @@
 # SASPData
 
-**Minimal Ingestion Pipeline** - Clean, simple data collection from SAS APIs into PostgreSQL.
+**Steel Challenge Analytics Pipeline** - Complete data ingestion and analytics for competitive shooting sports.
 
-> **Note**: The complete ETL pipeline with silver transforms is preserved in git tag `v1`. This version focuses on reliable bronze ingestion only.
+## 🚀 Current Status (August 22, 2025)
+
+**Phase 1: Analytics Foundation** - In Progress  
+- ✅ Complete scripts organization (bronze/silver/admin/other)
+- ✅ Performance ETL pipeline (stage/match/squad aggregation)  
+- ✅ Rankings tables deployed (individual + squad)
+- ⚠️ Rankings ETL needs data fixes to complete
+
+**Next:** Fix team_key constraints → Complete rankings pipeline → Phase 2 full re-ingestion
+
+See `HANDOFF.md` for detailed session documentation and next steps.
+
+---
 
 ## What this does
 

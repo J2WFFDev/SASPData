@@ -1,0 +1,509 @@
+{\rtf1\ansi\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil\fcharset1 Segoe UI Symbol;}{\f2\fnil Calibri;}{\f3\fnil\fcharset1 Cambria Math;}}
+{\*\generator Riched20 10.0.19041}{\*\mmathPr\mmathFont3\mwrapIndent1440 }\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\f0\fs22\lang9 Goal: stand up a VS Code repo on Windows where Copilot can \ldblquote see\rdblquote  your warehouse model and help you ingest/transform Schedule/Scoreboard/Competition/Team JSON into the final MySQL facts + dims.\par
+\par
+# 1) Direct Answer\par
+\par
+Quick check first (so I tailor steps precisely): do you want the ETL in **TypeScript (Node.js + mysql2)** or **Python (Pandas + mysql-connector)**? And do you want to use an ORM (Prisma) or stick to **raw SQL DDL + parameterized inserts**?\par
+\par
+# 2) Reasoning Summary\par
+\par
+* Copilot is strongest when the repo already contains: (a) a clear DDL, (b) TypeScript types mirroring your JSON, (c) small, composable loader functions, and (d) example transforms that demonstrate the key joins you validated (`comp_id`, `ent_id`, `disc_id`, `slot_id\f1\u8596?\f0 rid`).\par
+* On Windows + VS Code, Node/TS + `mysql2` keeps installs light and makes Copilot autocompletions excellent inside a typed pipeline.\par
+* We\rquote ll pin the unified ASCII schema and a \ldblquote FK matrix\rdblquote  as docs so Copilot keeps proposing correct joins. We\rquote ll also add starter tests to lock the rules (e.g., `slot_id == rid`).\par
+\par
+# 3) Alternatives/Trade-offs\par
+\par
+* **Prisma ORM**: nice models, migrations, and type safety; overhead if you\rquote re mostly doing bulk loads.\par
+* **Python**: faster for one-off data wrangling; Copilot suggestions are decent but repo-wide type inferences are usually stronger in TS.\par
+* **Single wide staging tables** vs normalized staging: keep it simple first\f2\emdash land JSON into raw tables, then transform to dims/facts with SQL.\par
+\par
+# 4) Action Plan (Windows + VS Code + MySQL, TypeScript-first)\par
+\par
+I\rquote ll give you a minimal, **runnable** skeleton. If you prefer Python or Prisma, say so and I\rquote ll switch the code.\par
+\par
+## A. Repo layout Copilot will latch onto\par
+\par
+```\par
+match-warehouse/\par
+  docs/\par
+    unified_schema.ascii\par
+    fk_matrix.md\par
+  sql/\par
+    01_dims.sql\par
+    02_facts.sql\par
+  etl/\par
+    types.ts\par
+    load_raw.ts\par
+    build_dims.ts\par
+    build_facts.ts\par
+    utils.ts\par
+  raw/\par
+    Schedule518.json\par
+    Scoreboard518.json\par
+    Comp518.json\par
+    Team649.json\par
+  .env\par
+  package.json\par
+  tsconfig.json\par
+  .vscode/tasks.json\par
+  README.md\par
+```\par
+\par
+### docs/unified\\_schema.ascii\par
+\par
+Paste the final ASCII outline you approved so Copilot keeps the shape in context.\par
+\par
+### docs/fk\\_matrix.md\par
+\par
+A tiny checklist Copilot can \ldblquote quote\rdblquote  while completing joins:\par
+\par
+```\par
+competition_id  == scoreboard.comp_id\par
+team_id (nat)   == scoreboard.ent_id\par
+discipline_id   == scoreboard.disc_id   \f1\u8596?\f0  discipline.name == schedule.slot.discipline\par
+slot.rid        == scoreboard.slot_id\par
+range_id        == competition.range_id == team.home_range_id\par
+athlete.ath_id  == scoreboard.ath_id\par
+```\par
+\par
+## B. MySQL schema (two files)\par
+\par
+### sql/01\\_dims.sql\par
+\par
+```sql\par
+-- Minimal DDL for dimensions (surrogates + naturals kept)\par
+CREATE TABLE dim_competition (\par
+  competition_key BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  competition_id_nat INT UNIQUE,\par
+  name VARCHAR(255),\par
+  org VARCHAR(32), type VARCHAR(8), status VARCHAR(8), shooting_style VARCHAR(32),\par
+  stage_one VARCHAR(64), stage_two VARCHAR(64), stage_three VARCHAR(64), stage_four VARCHAR(64),\par
+  start_date DATE, end_date DATE, open_date DATE, close_date DATE,\par
+  hosting_team_id_nat INT, range_id_nat INT,\par
+  INDEX(ix_range) (range_id_nat)\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE dim_team (\par
+  team_key BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  team_id_nat INT UNIQUE,\par
+  name VARCHAR(255), org VARCHAR(32), paper_name VARCHAR(255), paper_email VARCHAR(255),\par
+  state_id_nat INT, home_range_id_nat INT,\par
+  INDEX(ix_range) (home_range_id_nat)\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE dim_range (\par
+  range_key BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  range_id_nat INT UNIQUE,\par
+  name VARCHAR(255), type_id INT, contact VARCHAR(120), phone VARCHAR(40), email VARCHAR(120), url VARCHAR(255)\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE dim_discipline (\par
+  discipline_key BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  discipline_id_nat INT UNIQUE,\par
+  name VARCHAR(64),\par
+  competition_id_nat INT\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE dim_athlete (\par
+  athlete_key BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  ath_id_nat INT UNIQUE,\par
+  fname VARCHAR(80), lname VARCHAR(80), gender VARCHAR(12), bdate DATE,\par
+  address VARCHAR(255), city VARCHAR(120), state_id_nat INT, zip VARCHAR(15),\par
+  phone VARCHAR(40), email VARCHAR(120), email2 VARCHAR(120)\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE dim_slot (\par
+  slot_key BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  slot_rid_nat BIGINT UNIQUE,\par
+  number INT, name VARCHAR(255), stage VARCHAR(64),\par
+  discipline_name VARCHAR(64),\par
+  location_name VARCHAR(255), range_name VARCHAR(255),\par
+  expanded TINYINT\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE dim_date (\par
+  date_key INT PRIMARY KEY,  -- YYYYMMDD\par
+  full_date DATE, year INT, month INT, day INT, dow INT, week_of_year INT, is_weekend TINYINT\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE dim_time (\par
+  time_key INT PRIMARY KEY,  -- HHMM\par
+  hour INT, minute INT, am_pm CHAR(2)\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE bridge_team_athlete (\par
+  bridge_id BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  team_key BIGINT, athlete_key BIGINT, competition_key BIGINT NULL,\par
+  from_date DATE NULL, thru_date DATE NULL, role VARCHAR(64) NULL,\par
+  INDEX (team_key), INDEX (athlete_key), INDEX (competition_key)\par
+) ENGINE=InnoDB;\par
+```\par
+\par
+### sql/02\\_facts.sql\par
+\par
+```sql\par
+CREATE TABLE fact_entry (\par
+  entry_id BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  competition_key BIGINT, team_key BIGINT, discipline_key BIGINT, athlete_key BIGINT, slot_key BIGINT,\par
+  station INT, number INT, lid INT,\par
+  date_key INT, time_key INT,\par
+  location VARCHAR(64), flight VARCHAR(64),\par
+  manual_scoring TINYINT, is_valid TINYINT, eligible TINYINT, dq_tag TINYINT, dnf_tag TINYINT,\par
+  proc_pen DECIMAL(10,3), spp_final DECIMAL(10,3),\par
+  reg_date_key INT, reg_who VARCHAR(120),\par
+  INDEX (competition_key, discipline_key, is_valid, dq_tag, dnf_tag, spp_final),\par
+  INDEX (slot_key)\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE fact_entry_strings (\par
+  entry_string_id BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  entry_id BIGINT,\par
+  stage_no TINYINT, string_no TINYINT,\par
+  time_value DECIMAL(10,3), penalty_value DECIMAL(10,3), total_value DECIMAL(10,3),\par
+  UNIQUE KEY uq_es (entry_id, stage_no, string_no),\par
+  INDEX (stage_no, string_no)\par
+) ENGINE=InnoDB;\par
+\par
+CREATE TABLE fact_schedule (\par
+  schedule_id BIGINT AUTO_INCREMENT PRIMARY KEY,\par
+  competition_key BIGINT, slot_key BIGINT, lineup_id BIGINT,\par
+  station INT, athlete_name VARCHAR(255), team_name VARCHAR(255), class_label VARCHAR(128),\par
+  is_open TINYINT, exists_flag TINYINT,\par
+  INDEX (competition_key, slot_key)\par
+) ENGINE=InnoDB;\par
+```\par
+\par
+## C. VS Code + Node (TS) toolchain\par
+\par
+### package.json\par
+\par
+```json\par
+\{\par
+  "name": "match-warehouse",\par
+  "private": true,\par
+  "type": "module",\par
+  "scripts": \{\par
+    "build": "tsc -p .",\par
+    "ddl": "mysql --defaults-extra-file=.env.mysql < sql/01_dims.sql && mysql --defaults-extra-file=.env.mysql < sql/02_facts.sql",\par
+    "load:raw": "ts-node --esm etl/load_raw.ts",\par
+    "build:dims": "ts-node --esm etl/build_dims.ts",\par
+    "build:facts": "ts-node --esm etl/build_facts.ts",\par
+    "all": "npm run ddl && npm run build:dims && npm run build:facts"\par
+  \},\par
+  "devDependencies": \{\par
+    "typescript": "^5.5.4",\par
+    "@types/node": "^22.7.4",\par
+    "ts-node": "^10.9.2",\par
+    "zod": "^3.23.8"\par
+  \},\par
+  "dependencies": \{\par
+    "mysql2": "^3.11.0"\par
+  \}\par
+\}\par
+```\par
+\par
+### .env  (simple; adjust creds)\par
+\par
+```\par
+# for mysql CLI (used by tasks and scripts)\par
+[client]\par
+user=dev\par
+password=devpw\par
+host=127.0.0.1\par
+port=3306\par
+database=match_wh\par
+```\par
+\par
+Save as `.env.mysql` if you prefer to keep it separate. Do **not** commit real credentials.\par
+\par
+### .vscode/tasks.json\par
+\par
+```json\par
+\{\par
+  "version": "2.0.0",\par
+  "tasks": [\par
+    \{ "label": "MySQL: Create Dims+Facts", "type": "shell", "command": "npm run ddl", "problemMatcher": [] \},\par
+    \{ "label": "ETL: Build Dims", "type": "shell", "command": "npm run build:dims", "problemMatcher": [] \},\par
+    \{ "label": "ETL: Build Facts", "type": "shell", "command": "npm run build:facts", "problemMatcher": [] \}\par
+  ]\par
+\}\par
+```\par
+\par
+## D. Minimal ETL types and loaders\par
+\par
+### etl/types.ts (zod-validated shapes so Copilot infers joins)\par
+\par
+```ts\par
+import \{ z \} from "zod";\par
+\par
+export const ScoreboardAthlete = z.object(\{\par
+  comp_id: z.number(),\par
+  ent_id: z.number(),            // team nat id\par
+  disc_id: z.number(),           // discipline nat id\par
+  slot_id: z.number(),           // schedule.rid\par
+  ath_id: z.number(),            // global athlete id\par
+  station: z.number().nullable().optional(),\par
+  number: z.number().nullable().optional(),\par
+  lid: z.number().nullable().optional(),\par
+  date: z.string(),              // "YYYY-MM-DD"\par
+  time: z.string(),              // "HH:MM AM"\par
+  location: z.string().nullable().optional(),\par
+  flight: z.string().nullable().optional(),\par
+  spp_final: z.string().nullable().optional(),\par
+  is_valid: z.boolean().nullable().optional(),\par
+  dq_tag: z.boolean().nullable().optional(),\par
+  dnf_tag: z.boolean().nullable().optional(),\par
+  proc_pen: z.number().nullable().optional(),\par
+  // stage/string families (keep as string numbers; convert later)\par
+  // e.g., spp1_1 ... spp4_5, spp1_pen1..., spp1_tot1...\par
+\}).passthrough();\par
+\par
+export const ScheduleSlot = z.object(\{\par
+  rid: z.number(),\par
+  number: z.number().nullable().optional(),\par
+  name: z.string(),\par
+  discipline: z.string().nullable().optional(),\par
+  stage: z.string().nullable().optional(),\par
+  expanded: z.boolean().nullable().optional(),\par
+  flights: z.array(z.object(\{\par
+    rid: z.number(),\par
+    date: z.string(),\par
+    time: z.string(),\par
+    location: z.string().nullable().optional()\par
+  \})).optional(),\par
+  lineup: z.array(z.object(\{\par
+    station: z.number(),\par
+    team: z.string().nullable().optional(),\par
+    name: z.string().nullable().optional(),\par
+    class: z.string().nullable().optional(),\par
+    exists: z.boolean().nullable().optional(),\par
+    is_open: z.boolean().nullable().optional()\par
+  \})).optional()\par
+\}).passthrough();\par
+\par
+export const Competition = z.object(\{\par
+  id: z.number(),\par
+  name: z.string(),\par
+  stage_one: z.string().nullable().optional(),\par
+  stage_two: z.string().nullable().optional(),\par
+  stage_three: z.string().nullable().optional(),\par
+  stage_four: z.string().nullable().optional(),\par
+  start_date: z.string().nullable().optional(),\par
+  end_date: z.string().nullable().optional(),\par
+  open_date: z.string().nullable().optional(),\par
+  close_date: z.string().nullable().optional(),\par
+  range: z.object(\{ id: z.number(), name: z.string() \}).optional()\par
+\}).passthrough();\par
+\par
+export type ScoreboardAthleteT = z.infer<typeof ScoreboardAthlete>;\par
+export type ScheduleSlotT = z.infer<typeof ScheduleSlot>;\par
+export type CompetitionT = z.infer<typeof Competition>;\par
+```\par
+\par
+### etl/utils.ts (MySQL helpers + tiny date/time keys)\par
+\par
+```ts\par
+import mysql from "mysql2/promise";\par
+\par
+export async function getPool() \{\par
+  return mysql.createPool(\{ host: "127.0.0.1", user: "dev", password: "devpw", database: "match_wh", multipleStatements: true \});\par
+\}\par
+\par
+export const toDateKey = (d?: string | null) =>\par
+  d ? Number(d.replaceAll("-", "")) : null;         // "2023-05-13" -> 20230513\par
+\par
+export const toTimeKey = (t?: string | null) => \{\par
+  if (!t) return null;                              // "09:00 AM" -> 900\par
+  const m = t.match(/(\\d\{1,2\}):(\\d\{2\})\\s*(AM|PM)/i);\par
+  if (!m) return null;\par
+  let h = Number(m[1]) % 12; if (m[3].toUpperCase() === "PM") h += 12;\par
+  return h * 100 + Number(m[2]);\par
+\};\par
+\par
+export const dec = (s?: string | null) => (s ? Number(s) : null);\par
+```\par
+\par
+### etl/build\\_dims.ts (lands key dims from provided JSONs)\par
+\par
+```ts\par
+import \{ readFileSync \} from "fs";\par
+import \{ getPool, toDateKey \} from "./utils.js";\par
+import \{ Competition, ScheduleSlot \} from "./types.js";\par
+\par
+function json(p: string) \{ return JSON.parse(readFileSync(p, "utf-8")); \}\par
+\par
+async function main() \{\par
+  const pool = await getPool();\par
+\par
+  // dim_competition from Comp518.json\par
+  const comp = Competition.parse(json("raw/Comp518.json").data[0]);\par
+  await pool.query(\par
+    `INSERT INTO dim_competition (competition_id_nat,name,stage_one,stage_two,stage_three,stage_four,\par
+      start_date,end_date,open_date,close_date,range_id_nat)\par
+     VALUES (?,?,?,?,?,?,?,?,?,?,?)\par
+     ON DUPLICATE KEY UPDATE name=VALUES(name), stage_one=VALUES(stage_one), stage_two=VALUES(stage_two),\par
+       stage_three=VALUES(stage_three), stage_four=VALUES(stage_four), start_date=VALUES(start_date),\par
+       end_date=VALUES(end_date), open_date=VALUES(open_date), close_date=VALUES(close_date), range_id_nat=VALUES(range_id_nat)`,\par
+    [\par
+      comp.id, comp.name, comp.stage_one, comp.stage_two, comp.stage_three, comp.stage_four,\par
+      comp.start_date ?? null, comp.end_date ?? null, comp.open_date ?? null, comp.close_date ?? null,\par
+      comp.range?.id ?? null\par
+    ]\par
+  );\par
+\par
+  // dim_slot from Schedule518.json (slots[].rid is the natural key)\par
+  const sched = json("raw/Schedule518.json");\par
+  for (const slot of sched.slots.map((s: any) => ScheduleSlot.parse(s))) \{\par
+    await pool.query(\par
+      `INSERT INTO dim_slot (slot_rid_nat,number,name,stage,discipline_name,location_name,range_name,expanded)\par
+       VALUES (?,?,?,?,?,?,?,?)\par
+       ON DUPLICATE KEY UPDATE number=VALUES(number), name=VALUES(name), stage=VALUES(stage),\par
+         discipline_name=VALUES(discipline_name), location_name=VALUES(location_name),\par
+         range_name=VALUES(range_name), expanded=VALUES(expanded)`,\par
+      [slot.rid, slot.number ?? null, slot.name, slot.stage ?? null, slot.discipline ?? null,\par
+       sched.location_name ?? null, sched.range_name ?? null, slot.expanded ? 1 : 0]\par
+    );\par
+  \}\par
+\par
+  // Simple dim_date seeds (competition dates)\par
+  const dates = [comp.start_date, comp.end_date, comp.open_date, comp.close_date]\par
+    .filter(Boolean).map(x => toDateKey(x as string)).filter(Boolean) as number[];\par
+  for (const dk of new Set(dates)) \{\par
+    await pool.query(\par
+      `INSERT IGNORE INTO dim_date (date_key, full_date, year, month, day, dow, week_of_year, is_weekend)\par
+       VALUES (?, STR_TO_DATE(?, '%Y%m%d'), YEAR(STR_TO_DATE(?, '%Y%m%d')),\par
+               MONTH(STR_TO_DATE(?, '%Y%m%d')), DAY(STR_TO_DATE(?, '%Y%m%d')),\par
+               WEEKDAY(STR_TO_DATE(?, '%Y%m%d')), WEEK(STR_TO_DATE(?, '%Y%m%d')),\par
+               CASE WHEN DAYOFWEEK(STR_TO_DATE(?, '%Y%m%d')) IN (1,7) THEN 1 ELSE 0 END)`,\par
+      [dk, dk, dk, dk, dk, dk, dk, dk]\par
+    );\par
+  \}\par
+\par
+  await pool.end();\par
+\}\par
+main().catch(e => \{ console.error(e); process.exit(1); \});\par
+```\par
+\par
+### etl/build\\_facts.ts (loads fact\\_entry + fact\\_entry\\_strings from Scoreboard518.json)\par
+\par
+```ts\par
+import \{ readFileSync \} from "fs";\par
+import \{ getPool, toDateKey, toTimeKey, dec \} from "./utils.js";\par
+import \{ ScoreboardAthlete \} from "./types.js";\par
+\par
+function json(p: string) \{ return JSON.parse(readFileSync(p, "utf-8")); \}\par
+\par
+async function main() \{\par
+  const pool = await getPool();\par
+  const data = json("raw/Scoreboard518.json").teams.flatMap((t: any) =>\par
+    t.disciplines.flatMap((d: any) => d.athletes)\par
+  );\par
+\par
+  // Prepared lookups from natural IDs to surrogate keys\par
+  async function keyOf(table: string, natField: string, natVal: number, keyName = table.replace("dim_", "") + "_key") \{\par
+    const [rows] = await pool.query(`SELECT $\{keyName\} AS k FROM $\{table\} WHERE $\{natField\} = ?`, [natVal]);\par
+    return (rows as any[])[0]?.k ?? null;\par
+  \}\par
+\par
+  for (const raw of data) \{\par
+    const a = ScoreboardAthlete.parse(raw);\par
+\par
+    const competition_key = await keyOf("dim_competition", "competition_id_nat", a.comp_id);\par
+    const team_key        = await keyOf("dim_team",        "team_id_nat",        a.ent_id).catch(() => null); // seed later if needed\par
+    const discipline_key  = await keyOf("dim_discipline",  "discipline_id_nat",  a.disc_id).catch(() => null);\par
+    const slot_key        = await keyOf("dim_slot",        "slot_rid_nat",       a.slot_id);\par
+\par
+    // Optional: seed dim_athlete on the fly by ath_id_nat\par
+    let [rows] = await pool.query(`SELECT athlete_key FROM dim_athlete WHERE ath_id_nat = ?`, [a.ath_id]);\par
+    let athlete_key = (rows as any[])[0]?.athlete_key ?? null;\par
+    if (!athlete_key) \{\par
+      await pool.query(`INSERT INTO dim_athlete (ath_id_nat, fname, lname) VALUES (?,?,?) ON DUPLICATE KEY UPDATE fname=VALUES(fname), lname=VALUES(lname)`,\par
+        [a.ath_id, (a as any).fname ?? null, (a as any).lname ?? null]);\par
+      [rows] = await pool.query(`SELECT athlete_key FROM dim_athlete WHERE ath_id_nat = ?`, [a.ath_id]);\par
+      athlete_key = (rows as any[])[0]?.athlete_key ?? null;\par
+    \}\par
+\par
+    // Insert fact_entry\par
+    const [res] = await pool.query(\par
+      `INSERT INTO fact_entry\par
+       (competition_key,team_key,discipline_key,athlete_key,slot_key,\par
+        station,number,lid,date_key,time_key,location,flight,\par
+        manual_scoring,is_valid,eligible,dq_tag,dnf_tag,proc_pen,spp_final,reg_date_key,reg_who)\par
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)\par
+      `,\par
+      [\par
+        competition_key, team_key, discipline_key, athlete_key, slot_key,\par
+        (a.station ?? null), (a.number ?? null), (a.lid ?? null),\par
+        toDateKey(a.date), toTimeKey(a.time), a.location ?? null, a.flight ?? null,\par
+        ((a as any).manual_scoring ? 1 : 0),\par
+        ((a.is_valid ?? false) ? 1 : 0),\par
+        ((a as any).eligible ? 1 : 0),\par
+        ((a.dq_tag ?? false) ? 1 : 0),\par
+        ((a.dnf_tag ?? false) ? 1 : 0),\par
+        a.proc_pen ?? null,\par
+        dec(a.spp_final),\par
+        toDateKey((a as any).reg_date?.slice(0, 10) ?? null),\par
+        (a as any).reg_who ?? null\par
+      ]\par
+    );\par
+    const entry_id = (res as any).insertId;\par
+\par
+    // Unpivot per-stage/per-string \f3\u8594?\f0  fact_entry_strings\par
+    for (let stage = 1; stage <= 4; stage++) \{\par
+      for (let str = 1; str <= 5; str++) \{\par
+        const t  = (a as any)[`spp$\{stage\}_$\{str\}`];\par
+        const pn = (a as any)[`spp$\{stage\}_pen$\{str\}`];\par
+        const tt = (a as any)[`spp$\{stage\}_tot$\{str\}`];\par
+        if (t == null && pn == null && tt == null) continue;\par
+        await pool.query(\par
+          `INSERT INTO fact_entry_strings (entry_id,stage_no,string_no,time_value,penalty_value,total_value)\par
+           VALUES (?,?,?,?,?,?)`,\par
+          [entry_id, stage, str, dec(t), pn == null ? null : Number(pn), dec(tt)]\par
+        );\par
+      \}\par
+    \}\par
+  \}\par
+\par
+  await pool.end();\par
+\}\par
+main().catch(e => \{ console.error(e); process.exit(1); \});\par
+```\par
+\par
+## E. How to run (Windows, VS Code)\par
+\par
+1. Install Node LTS and MySQL server (already on your box).\par
+2. In VS Code Terminal (PowerShell):\par
+\par
+```\par
+cd match-warehouse\par
+npm i\par
+# Create DB: in mysql shell \f3\u8594?\f0  CREATE DATABASE match_wh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\par
+npm run ddl\par
+```\par
+\par
+3. Drop your JSONs into `raw/` (you already have the four sample files).\par
+4. Build dimensions, then facts:\par
+\par
+```\par
+npm run build:dims\par
+npm run build:facts\par
+```\par
+\par
+5. Query:\par
+\par
+```sql\par
+SELECT d.name AS discipline, fe.spp_final, a.ath_id_nat\par
+FROM fact_entry fe\par
+JOIN dim_discipline d ON d.discipline_key = fe.discipline_key\par
+JOIN dim_athlete    a ON a.athlete_key    = fe.athlete_key\par
+WHERE fe.is_valid = 1\par
+ORDER BY fe.spp_final ASC\par
+LIMIT 20;\par
+```\par
+\par
+---\par
+\par
+If you confirm **TypeScript + raw SQL is fine**, I\rquote ll add: (1) a `dim_team`/`dim_range` builder that seeds from Team/Comp files; (2) a tiny test that asserts `slot_id == rid`; (3) a VS Code Task that runs the full pipeline (`MySQL: Create + ETL: Build Dims + ETL: Build Facts`) in one go.\lang9\par
+}
+ 

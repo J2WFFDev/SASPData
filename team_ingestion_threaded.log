@@ -1,0 +1,45 @@
+2025-08-22 16:35:59,600 - INFO - STARTING: Teams 3200 to 3210 (workers=5, rate_limit=24/min)
+2025-08-22 16:35:59,600 - INFO - PROCESSING_CHUNK: 3200-3204 (5 teams)
+2025-08-22 16:36:19,050 - ERROR - ERROR Team 3201: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:19,067 - ERROR - ERROR Team 3204: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:19,185 - ERROR - BATCH_INSERT_ERROR: null value in column "source" of relation "raw_teams" violates not-null constraint
+DETAIL:  Failing row contains (3200, null, {"id": 3200, "org": "SASP", "name": "Shoreland Lutheran Shooting..., null, null, 2025-08-22 16:36:19.147107-05).
+
+2025-08-22 16:36:19,186 - INFO - CHUNK_COMPLETE: 3 inserted, 0 not found, 2 errors (0.3 req/sec)
+2025-08-22 16:36:20,187 - INFO - PROCESSING_CHUNK: 3205-3209 (5 teams)
+2025-08-22 16:36:39,506 - ERROR - ERROR Team 3209: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:39,506 - ERROR - ERROR Team 3208: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:39,506 - ERROR - ERROR Team 3206: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:39,507 - ERROR - ERROR Team 3205: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:39,507 - ERROR - ERROR Team 3207: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:39,510 - INFO - CHUNK_COMPLETE: 0 inserted, 0 not found, 5 errors (0.3 req/sec)
+2025-08-22 16:36:40,512 - INFO - PROCESSING_CHUNK: 3210-3210 (1 teams)
+2025-08-22 16:36:59,801 - ERROR - ERROR Team 3210: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-08-22 16:36:59,802 - INFO - CHUNK_COMPLETE: 0 inserted, 0 not found, 1 errors (0.1 req/sec)
+2025-08-22 16:37:00,804 - INFO - 
+INGESTION_COMPLETE:
+Total processed: 11
+Successfully inserted: 0
+Not found: 0
+Errors: 8
+Success rate: 0.0%
+        
+2025-08-22 16:38:11,471 - INFO - STARTING: Teams 3200 to 3210 (workers=5, rate_limit=24/min)
+2025-08-22 16:38:11,471 - INFO - PROCESSING_CHUNK: 3200-3204 (5 teams)
+2025-08-22 16:38:12,186 - INFO - BATCH_INSERT: 5 teams
+2025-08-22 16:38:12,186 - INFO - CHUNK_COMPLETE: 5 inserted, 0 not found, 0 errors (7.0 req/sec)
+2025-08-22 16:38:13,194 - INFO - PROCESSING_CHUNK: 3205-3209 (5 teams)
+2025-08-22 16:38:13,640 - WARNING - HTTP_ERROR Team 3206: 500
+2025-08-22 16:38:13,777 - INFO - BATCH_INSERT: 4 teams
+2025-08-22 16:38:13,777 - INFO - CHUNK_COMPLETE: 4 inserted, 0 not found, 1 errors (8.6 req/sec)
+2025-08-22 16:38:14,778 - INFO - PROCESSING_CHUNK: 3210-3210 (1 teams)
+2025-08-22 16:38:15,286 - INFO - BATCH_INSERT: 1 teams
+2025-08-22 16:38:15,286 - INFO - CHUNK_COMPLETE: 1 inserted, 0 not found, 0 errors (2.0 req/sec)
+2025-08-22 16:38:16,288 - INFO - 
+INGESTION_COMPLETE:
+Total processed: 11
+Successfully inserted: 10
+Not found: 0
+Errors: 1
+Success rate: 90.9%
+        
